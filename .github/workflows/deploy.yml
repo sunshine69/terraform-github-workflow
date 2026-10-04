@@ -1,0 +1,75 @@
+# =============================================================================
+# DEPLOY PIPELINE (manual) — tf init + plan + apply
+# Trigger: manual run on a release branch (release/x.x.x)
+# Gate: GitHub environment (dev = no approval; uat/prod = required reviewers).
+#
+# Each env dir (envs/dev, envs/uat, envs/prod) is a standalone Terraform root
+# with its own backend.tf. The job cd's into the selected env dir, so the
+# backend (address/username) is read from that env's backend.tf and the
+# password is resolved from the TF_HTTP_PASSWORD env var, which is the secret
+# on the matching GitHub environment (dev/uat/prod). The same secret name can
+# therefore hold a DIFFERENT value per environment.
+# ============================================================================
+name: deploy
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: "Target environment"
+        type: choice
+        options:
+          - dev
+          - uat
+          - prod
+        required: true
+      version:
+        description: "Release branch to deploy (release/x.x.x)"
+        type: string
+        required: true
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    name: apply-${{ inputs.environment }}
+    environment:
+      name: ${{ inputs.environment }}
+      url: https://play.terraform.io
+
+    defaults:
+      working-directory: envs/${{ inputs.environment }}
+
+    steps:
+      - name: Verify release branch
+        run: |
+          if [[ ! "${{ inputs.version }}" =~ ^release/ ]]; then
+            echo "::error::Deployment only allowed from release/x.x.x branches"
+            exit 1
+          fi
+          echo "OK: version=${{ inputs.version }}" >> $GITHUB_STEP_SUMMARY
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.9"
+
+      - name: Terraform Init
+        # Backend address/username come from this env's backend.tf.
+        # TF_HTTP_PASSWORD (GitHub environment secret) is picked up as the password.
+        run: terraform init -input=false
+        env:
+          TF_HTTP_USERNAME: "root"
+          TF_HTTP_PASSWORD: ${{ secrets.TF_HTTP_PASSWORD }}
+
+      - name: Terraform Plan
+        run: terraform plan -input=false -no-color
+
+      - name: Terraform Apply
+        if: success()
+        run: terraform apply -input=false -no-color -auto-approve

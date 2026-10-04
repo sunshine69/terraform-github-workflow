@@ -1,0 +1,6 @@
+uat:
+  name: uat
+  timeout_minutes: 60
+  required_reviewers:
+    - reviewer-1
+    # Add GitHub usernames or team names that must approve uat deployments.

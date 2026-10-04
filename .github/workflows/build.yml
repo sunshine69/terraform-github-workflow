@@ -1,0 +1,53 @@
+# =============================================================================
+# BUILD PIPELINE (auto) — tf init + tf plan for ALL envs
+# Trigger: push to any beta/** branch
+# No GitHub environment gate → runs immediately, no approval needed.
+# Uses the REPO-LEVEL TF_HTTP_PASSWORD secret (not an environment secret).
+# The user can preview the plan output in the Actions UI.
+# ============================================================================
+name: build
+on:
+  push:
+    branches:
+      - "beta/**"
+
+permissions:
+  contents: read
+
+jobs:
+  plan:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        env: [dev, uat, prod]
+    name: plan-${{ matrix.env }}
+    defaults:
+      working-directory: envs/${{ matrix.env }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.9"
+
+      - name: Terraform Init
+        # Backend address/username come from this env's backend.tf.
+        # TF_HTTP_PASSWORD is the repo-level secret (no environment gate here).
+        run: terraform init -input=false
+        env:
+          TF_HTTP_USERNAME: "root"
+          TF_HTTP_PASSWORD: ${{ secrets.TF_HTTP_PASSWORD }}
+
+      - name: Terraform Plan
+        run: terraform plan -input=false -no-color -out=tfplan
+
+      - name: Upload Plan Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: tfplan-${{ matrix.env }}
+          path: tfplan
+          retention-days: 7

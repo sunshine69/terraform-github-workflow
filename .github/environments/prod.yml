@@ -1,0 +1,8 @@
+prod:
+  name: prod
+  timeout_minutes: 60
+  required_reviewers:
+    - reviewer-1
+    - reviewer-2
+    # Add GitHub usernames or team names that must approve prod deployments.
+    # prod is double-approved by default to enforce least privilege.
