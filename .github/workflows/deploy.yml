@@ -39,6 +39,10 @@ jobs:
       name: ${{ inputs.environment }}
       url: https://play.terraform.io
 
+    env:
+      TF_HTTP_USERNAME: "root"
+      TF_HTTP_PASSWORD: ${{ secrets.TF_HTTP_PASSWORD }}
+
     defaults:
       run:
         working-directory: envs/${{ inputs.environment }}
@@ -64,9 +68,6 @@ jobs:
         # Backend address/username come from this env's backend.tf.
         # TF_HTTP_PASSWORD (GitHub environment secret) is picked up as the password.
         run: terraform init -input=false
-        env:
-          TF_HTTP_USERNAME: "root"
-          TF_HTTP_PASSWORD: ${{ secrets.TF_HTTP_PASSWORD }}
 
       - name: Terraform Plan
         run: terraform plan -input=false -no-color

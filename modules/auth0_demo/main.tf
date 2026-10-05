@@ -4,6 +4,15 @@
 # Each env dir instantiates this module and passes its own args.
 # =============================================================================
 
+terraform {
+  required_providers {
+    null = {
+      source  = "hashicorp/null"
+      version = ">= 3.0"
+    }
+  }
+}
+
 # --- Hello World placeholder (real Auth0 resources go here) ---------------
 resource "null_resource" "hello_world" {
   triggers = {

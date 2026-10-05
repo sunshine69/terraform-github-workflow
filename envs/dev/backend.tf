@@ -5,15 +5,14 @@
 # =============================================================================
 terraform {
   backend "http" {
-    address  = "https://play.terraform.io/terraform/state/dev"
-    username = "root"
-    encrypt  = true
+    address  = "https://tfstate.kaykraft.org/tfstate/sctauth0/dev"
+    username = "sctauth0"
   }
 
   required_version = ">= 1.7"
   required_providers {
     null = {
-      source  = "null/null"
+      source  = "hashicorp/null"
       version = ">= 3.0"
     }
   }

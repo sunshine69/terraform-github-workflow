@@ -7,3 +7,4 @@
 .rc
 _tf.rc
 .terraform.rc
+aig_stream_debug.log
