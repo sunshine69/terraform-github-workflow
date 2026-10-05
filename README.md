@@ -10,6 +10,14 @@ Each environment is a **standalone Terraform root** (its own `backend.tf` +
 module (`modules/auth0_demo/`) that every env instantiates.
 
 ```
+.github/
+├── environments/        # GitHub Environments (approval gates)
+│   ├── dev.yml          # no required_reviewers — never blocked
+│   ├── uat.yml          # 1 required reviewer
+│   └── prod.yml         # 2 required reviewers
+└── workflows/
+    ├── build.yml        # auto: init + plan on beta/** (repo-level secret)
+    └── deploy.yml       # manual: init + plan + apply on release/x.x.x (env gate)
 modules/
 └── auth0_demo/          # shared logic (main.tf, variables.tf, outputs.tf)
 envs/
