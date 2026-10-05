@@ -22,6 +22,9 @@ jobs:
       matrix:
         env: [dev, uat, prod]
     name: plan-${{ matrix.env }}
+    env:
+      TF_HTTP_USERNAME: "root"
+      TF_HTTP_PASSWORD: ${{ secrets.TF_HTTP_PASSWORD }}
     defaults:
       run:
         working-directory: envs/${{ matrix.env }}
@@ -39,9 +42,6 @@ jobs:
         # Backend address/username come from this env's backend.tf.
         # TF_HTTP_PASSWORD is the repo-level secret (no environment gate here).
         run: terraform init -input=false
-        env:
-          TF_HTTP_USERNAME: "root"
-          TF_HTTP_PASSWORD: ${{ secrets.TF_HTTP_PASSWORD }}
 
       - name: Terraform Plan
         run: terraform plan -input=false -no-color -out=tfplan
