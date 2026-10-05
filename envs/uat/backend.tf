@@ -7,7 +7,6 @@ terraform {
   backend "http" {
     address  = "https://play.terraform.io/terraform/state/uat"
     username = "root"
-    encrypt  = true
   }
 
   required_version = ">= 1.7"
