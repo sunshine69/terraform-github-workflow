@@ -23,7 +23,8 @@ jobs:
         env: [dev, uat, prod]
     name: plan-${{ matrix.env }}
     defaults:
-      working-directory: envs/${{ matrix.env }}
+      run:
+        working-directory: envs/${{ matrix.env }}
 
     steps:
       - name: Checkout

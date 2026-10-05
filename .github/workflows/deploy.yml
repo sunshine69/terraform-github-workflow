@@ -40,7 +40,8 @@ jobs:
       url: https://play.terraform.io
 
     defaults:
-      working-directory: envs/${{ inputs.environment }}
+      run:
+        working-directory: envs/${{ inputs.environment }}
 
     steps:
       - name: Verify release branch
