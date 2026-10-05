@@ -5,8 +5,8 @@
 # =============================================================================
 terraform {
   backend "http" {
-    address  = "https://play.terraform.io/terraform/state/dev"
-    username = "root"
+    address  = "https://tfstate.kaykraft.org/tfstate/sctauth0/dev"
+    username = "sctauth0"
   }
 
   required_version = ">= 1.7"
