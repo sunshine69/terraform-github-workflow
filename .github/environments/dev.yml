@@ -1,4 +1,0 @@
-dev:
-  name: dev
-  timeout_minutes: 30
-# No required_reviewers → dev deploy is never blocked (manual run only).
