@@ -14,7 +14,7 @@ name: deploy
 on:
   workflow_dispatch:
     inputs:
-      environment:
+      gh_environment_name:
         description: "Target environment"
         type: choice
         options:
@@ -34,9 +34,9 @@ permissions:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    name: apply-${{ inputs.environment }}
+    name: apply-${{ inputs.gh_environment_name }}
     environment:
-      name: ${{ inputs.environment }}
+      name: ${{ inputs.gh_environment_name }}
       url: https://play.terraform.io
 
     env:
@@ -45,7 +45,7 @@ jobs:
 
     defaults:
       run:
-        working-directory: envs/${{ inputs.environment }}
+        working-directory: envs/${{ inputs.gh_environment_name }}
 
     steps:
       - name: Checkout
