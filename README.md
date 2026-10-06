@@ -9,12 +9,10 @@ Each environment is a **standalone Terraform root** (its own `backend.tf` +
 `main.tf` + `terraform.tfvars`). All shared resource logic lives in a single
 module (`modules/auth0_demo/`) that every env instantiates.
 
+Github does not allow to create environments from source code. If in work flow we reference a non existing environment it will create one but without protection rules etc unless we use github API.
+
 ```
-.github/
-├── environments/        # GitHub Environments (approval gates)
-│   ├── dev.yml          # no required_reviewers — never blocked
-│   ├── uat.yml          # 1 required reviewer
-│   └── prod.yml         # 2 required reviewers
+.github/ 
 └── workflows/
     ├── build.yml        # auto: init + plan on beta/** (repo-level secret)
     └── deploy.yml       # manual: init + plan + apply on release/x.x.x (env gate)
