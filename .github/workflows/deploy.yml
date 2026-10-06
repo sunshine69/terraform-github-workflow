@@ -22,10 +22,11 @@ on:
           - uat
           - prod
         required: true
-      version:
-        description: "Release branch to deploy (release/x.x.x)"
-        type: string
-        required: true
+      # use github env protection  
+      # version:
+      #   description: "Release branch to deploy (release/x.x.x)"
+      #   type: string
+      #   required: true
 
 permissions:
   contents: read
@@ -50,14 +51,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-        
-      - name: Verify release branch
-        run: |
-          if [[ ! "${{ inputs.version }}" =~ ^release/ ]]; then
-            echo "::error::Deployment only allowed from release/x.x.x branches"
-            exit 1
-          fi
-          echo "OK: version=${{ inputs.version }}" >> $GITHUB_STEP_SUMMARY      
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
