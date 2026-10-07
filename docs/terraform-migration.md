@@ -103,7 +103,6 @@ export AUTH0_CLIENT_ID="<terraform-managed client id>"
 export AUTH0_CLIENT_SECRET="<client secret>"
 
 # Verify:
-auth0 tenants list
 auth0 clients list
 ```
 
@@ -135,6 +134,7 @@ writes a small, self-contained Terraform root into an output directory:
 
 ```bash
 # Point the CLI at the tenant
+export AUTH0_CLI_AUTH_MODE=env
 export AUTH0_DOMAIN="<your-tenant>.auth0.com"
 export AUTH0_CLIENT_ID="<terraform-managed client id>"
 export AUTH0_CLIENT_SECRET="<client secret>"
